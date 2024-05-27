@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  domain: ['127.0.0.1'],
   images: {
+    domains: ['127.0.0.1', 'admin.kiendev.click'],
     remotePatterns: [],
     loader: "default"
   },
