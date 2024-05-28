@@ -28,4 +28,4 @@ jobs:
             sudo docker rm first_proj_fe
             sudo docker rmi first_proj_fe
             sudo docker build -t  first_proj_fe .
-            sudo docker run -d --restart unless-stopped --name first_proj_fe -p 3030:3000 first_proj_fe
+            sudo docker run -d --restart unless-stopped --name first_proj_fe -p 3000:3000 first_proj_fe
