@@ -22,7 +22,7 @@ jobs:
             ssh-add /root/.ssh/github_key
             git checkout .
             git clean -df
-            git pull
+            git pull origin master
             git status
             sudo docker stop first_proj_fe
             sudo docker rm first_proj_fe
