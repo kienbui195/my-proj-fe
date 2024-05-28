@@ -19,7 +19,7 @@ jobs:
             whoami
             cd ~/KienBQ/my-proj-fe/
             eval `ssh-agent -s`
-            ssh-add /root/.ssh/github-key
+            ssh-add /root/.ssh/github_key
             echo -n "" > .env
             echo "NEXT_PUBLIC_BE=https://admin.kiendev.click/api" >> .env
             echo "NEXT_PUBLIC_UPLOAD=https://admin.kiendev.click" >> .env
