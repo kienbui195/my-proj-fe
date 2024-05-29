@@ -6,7 +6,7 @@ import Link from "next/link";
 
 const MainHeader = () => {
   return (
-    <header className="flex items-center w-full fixed z-[99] top-0 justify-between left-0 border-b border-black shadow-md py-4">
+    <header className="flex items-center w-full fixed z-[49] top-0 justify-between left-0 border-b border-black shadow-md py-4">
       <NavigationMenu className="w-full max-w-[1060px] m-auto">
         <NavigationMenuList>
           <NavigationMenuItem>

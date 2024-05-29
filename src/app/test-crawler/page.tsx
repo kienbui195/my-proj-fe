@@ -21,6 +21,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import axios from "axios";
 
 export type TOutPut = "html" | "autoparse";
 
@@ -41,17 +42,38 @@ const TestCrawler = () => {
     apiKey: "",
   });
   const [dialog, setDialog] = React.useState(false);
-  const [result, setResult] = React.useState(null);
+  const [result, setResult] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
 
-  const handleSendReqZenrows = () => {};
-
-  React.useEffect(() => {
-    if (result) {
-      setDialog(true);
-    }
-
-    return () => setDialog(false);
-  }, [result]);
+  const handleSendReqZenrows = async (e: any) => {
+    e.preventDefault();
+    setLoading(true);
+    await axios
+      .request({
+        url: `${process.env.NEXT_PUBLIC_BE}/crawler/view-data`,
+        method: "POST",
+        data: {
+          handler: "handleZenrows",
+          payload: {
+            urlScrape: zenrowsData.urlScrape,
+            addOn: zenrowsData.addOn,
+            boostMode: zenrowsData.boostMode,
+            outPut: zenrowsData.outPut,
+            apiKey: zenrowsData.apiKey,
+          },
+        },
+      })
+      .then((res) => {
+        setResult(JSON.stringify(res.data.data));
+        setDialog(true);
+      })
+      .catch((err) => {
+        console.log(err?.message ?? err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   return (
     <section className="border border-black rounded-lg p-6 shadow-md">
@@ -143,7 +165,9 @@ const TestCrawler = () => {
                   </RadioGroup>
                 </div>
               </div>
-              <Button type="submit">Send Request</Button>
+              <Button type="submit" disabled={loading}>
+                Send Request
+              </Button>
             </form>
           </AccordionContent>
         </AccordionItem>
@@ -171,13 +195,15 @@ const TestCrawler = () => {
         defaultOpen={false}
         onOpenChange={(val) => setDialog(val)}
       >
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="max-w-[90vw] w-fit">
           <DialogHeader>
             <DialogTitle>Result</DialogTitle>
           </DialogHeader>
-          <div className="grid gap-4 py-4">{result}</div>
+          <div className="max-h-[80vh] overflow-y-scroll overflow-x-hidden max-w-[] h-full z-[100]">
+            {result}
+          </div>
           <DialogFooter>
-            <Button type="submit">Save changes</Button>
+            <Button onClick={() => setDialog(false)}>OK</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
