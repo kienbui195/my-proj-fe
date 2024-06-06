@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import MainHeader from "@/components/MainHeader";
+import { Toaster } from "@/components/ui/toaster";
+import ReduxProvider from "./ReduxProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,8 +20,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={"bg-slate-200"}>
-        <MainHeader />
-        <main className="w-full max-w-[1060px] m-auto mt-[100px]">{children}</main>
+        <ReduxProvider>
+          <MainHeader />
+          <main className="w-full max-w-[1060px] m-auto mt-[100px]">
+            {children}
+          </main>
+          <Toaster />
+        </ReduxProvider>
       </body>
     </html>
   );
