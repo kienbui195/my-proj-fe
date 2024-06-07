@@ -23,7 +23,7 @@ jobs:
             git pull origin master
             if ! command -v node &> /dev/null
             then
-              curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+              curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
               sudo apt-get install -y nodejs
             fi
             if ! command -v npm &> /dev/null
