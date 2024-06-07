@@ -17,9 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "../ui/avatar";
-import Image from "next/image";
-import { Profile } from "@/lib/svgExport";
-import { LogOut, Settings, User } from "lucide-react";
+import { Crown, LayoutDashboard, LogOut, Settings, User } from "lucide-react";
 
 const MainHeader = () => {
   const isClient = typeof window === "object";
@@ -63,6 +61,10 @@ const MainHeader = () => {
               fieldName: "token",
               value: userLocal?.token ?? "",
             },
+            {
+              fieldName: "role",
+              value: res.data.user_role,
+            },
           ])
         );
       })
@@ -79,25 +81,34 @@ const MainHeader = () => {
   }, []);
 
   return (
-    <header className=" w-full fixed z-[49] top-0  left-0 border-b border-black shadow-md py-4">
+    <header className=" w-full fixed z-[49] top-0  left-0 border-b border-black shadow-md py-4 bg-slate-300">
       <div className="w-full max-w-[1060px] m-auto">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link href="/chat-app">
-              <Button variant={"ghost"}>Chat Chit</Button>
+            <Link href="/hoc-lai-xe">
+              <Button variant={"ghost"}>Học lái xe</Button>
             </Link>
           </div>
           {userInfo.id !== 0 ? (
             <div>
               <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <Avatar>
+                <DropdownMenuTrigger className={`outline-none relative`}>
+                  <Avatar className={`${userInfo.role === 'admin' ? 'border-2 border-yellow-400 rounded-full' : ""}`}>
                     <AvatarFallback className="font-bold bg-yellow-100">
                       {userInfo.email[0].toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
+                  {userInfo.role === 'admin' && <Crown className="w-4 h-4 absolute -top-1/4 left-1/3 bg-yellow-400"/>}
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56">
+                  {userInfo.role === "admin" && (
+                    <Link href={"/admin-dashboard"}>
+                      <DropdownMenuItem>
+                        <LayoutDashboard className="w-4 h-4 mr-2" />
+                        <span>Dashboard</span>
+                      </DropdownMenuItem>
+                    </Link>
+                  )}
                   <Link href={"/my-profile"}>
                     <DropdownMenuItem>
                       <User className="w-4 h-4 mr-2" />

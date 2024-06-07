@@ -26,6 +26,14 @@ import InputPassword from "@/components/InputPassword";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import apis from "@/lib/apis";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -37,6 +45,7 @@ const formSchema = z.object({
   password: z.string().min(6, {
     message: "Username must be at least 6 characters.",
   }),
+  user_role: z.enum(["admin", "user"]).default("user"),
 });
 
 const SignUp = () => {
@@ -50,18 +59,20 @@ const SignUp = () => {
       username: "",
       email: "",
       password: "",
+      user_role: "user",
     },
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    const { username, email, password } = values;
+    const { username, email, password, user_role } = values;
     if (password !== repass) return;
 
-    axios
-      .post(`${process.env.NEXT_PUBLIC_BE}/auth/local/register`, {
+    apis
+      .register({
         username,
-        email,
         password,
+        email,
+        role: user_role,
       })
       .then((res) => {
         toast({
@@ -119,6 +130,32 @@ const SignUp = () => {
                         {...field}
                       />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="user_role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Your Role<span className="text-red-500 ml-1">*</span>
+                    </FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a role" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="admin">Admin</SelectItem>
+                        <SelectItem value="user">User</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

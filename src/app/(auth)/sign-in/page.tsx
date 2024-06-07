@@ -22,7 +22,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import InputPassword from "@/components/InputPassword";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import { useDispatch } from "react-redux";
@@ -87,6 +86,10 @@ const SignIn = () => {
             {
               fieldName: "token",
               value: res.data.jwt,
+            },
+            {
+              fieldName: "role",
+              value: res.data.user.user_role,
             },
           ])
         );

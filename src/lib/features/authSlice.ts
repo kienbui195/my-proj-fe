@@ -6,10 +6,11 @@ export interface IAuthState {
   username: string;
   email: string;
   token: string;
+  role?: 'admin' | 'user'
 }
 
 export interface IAuthPayloadAction {
-  fieldName: "id" | "username" | "email" | "token";
+  fieldName: "id" | "username" | "email" | "token" | "role";
   value: any;
 }
 
@@ -18,6 +19,7 @@ const initialState: IAuthState = {
   username: "",
   email: "",
   token: "",
+  role: undefined
 };
 
 export const authSlice = createSlice({
@@ -42,6 +44,7 @@ export const authSlice = createSlice({
         username: "",
         email: "",
         token: "",
+        role: undefined
       });
     },
   },

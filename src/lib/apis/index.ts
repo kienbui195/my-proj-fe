@@ -31,6 +31,28 @@ const apis = {
       .then((res) => res)
       .catch((err) => err);
   },
+
+  register: async ({
+    username,
+    password,
+    email,
+    role,
+  }: {
+    username: string;
+    password: string;
+    email: string;
+    role: string;
+  }) => {
+    return await axios
+      .post(`${process.env.NEXT_PUBLIC_BE}/auth/local/register`, {
+        username,
+        password,
+        email,
+        user_role: role,
+      })
+      .then((res) => res)
+      .catch((err) => err);
+  },
 };
 
 export default apis;
