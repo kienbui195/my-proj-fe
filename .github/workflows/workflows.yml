@@ -21,15 +21,8 @@ jobs:
             eval `ssh-agent -s`
             ssh-add /root/.ssh/github_key
             git pull origin master
-            if ! command -v node &> /dev/null
-            then
-              curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-              sudo apt-get install -y nodejs
-            fi
-            if ! command -v npm &> /dev/null
-            then
-              sudo apt-get install -y npm
-            fi
+            export NVM_DIR=~/.nvm
+            source ~/.nvm/nvm.sh  
             npm install
             rm -rf .env
             echo "NEXT_PUBLIC_BE=https://admin.kiendev.click/api" >> .env
