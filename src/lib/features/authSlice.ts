@@ -8,6 +8,11 @@ export interface IAuthState {
   token: string;
 }
 
+export interface IAuthPayloadAction {
+  fieldName: "id" | "username" | "email" | "token";
+  value: any;
+}
+
 const initialState: IAuthState = {
   id: 0,
   username: "",
@@ -19,10 +24,16 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    updateUser: (state, action: PayloadAction<IAuthState>) => {
-      return (state = {
-        ...action.payload,
-      });
+    updateUser: (state, action: PayloadAction<IAuthPayloadAction[]>) => {
+      let newState: IAuthState = { ...state };
+      for (let i = 0; i < action.payload.length; i++) {
+        newState = {
+          ...newState,
+          [action.payload[i].fieldName]: action.payload[i].value,
+        };
+      }
+
+      return (state = newState);
     },
 
     clearUser: (state) => {

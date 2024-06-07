@@ -71,12 +71,24 @@ const SignIn = () => {
           })
         );
         dispatch(
-          updateUser({
-            id: res.data.user.id,
-            email: res.data.user.email,
-            username: res.data.user.username,
-            token: res.data.jwt,
-          })
+          updateUser([
+            {
+              fieldName: "id",
+              value: res.data.user.id,
+            },
+            {
+              fieldName: "username",
+              value: res.data.user.username,
+            },
+            {
+              fieldName: "email",
+              value: res.data.user.email,
+            },
+            {
+              fieldName: "token",
+              value: res.data.jwt,
+            },
+          ])
         );
         router.push("/");
       })
