@@ -6,11 +6,12 @@ export interface IAuthState {
   username: string;
   email: string;
   token: string;
-  role?: 'admin' | 'user'
+  role?: "admin" | "user";
+  acc_status?: "Verified" | "Rejected" | "Pending";
 }
 
 export interface IAuthPayloadAction {
-  fieldName: "id" | "username" | "email" | "token" | "role";
+  fieldName: "id" | "username" | "email" | "token" | "role" | "acc_status";
   value: any;
 }
 
@@ -19,7 +20,8 @@ const initialState: IAuthState = {
   username: "",
   email: "",
   token: "",
-  role: undefined
+  role: undefined,
+  acc_status: undefined,
 };
 
 export const authSlice = createSlice({
@@ -44,7 +46,8 @@ export const authSlice = createSlice({
         username: "",
         email: "",
         token: "",
-        role: undefined
+        role: undefined,
+        acc_status: undefined,
       });
     },
   },

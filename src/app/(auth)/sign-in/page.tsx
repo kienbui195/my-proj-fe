@@ -69,6 +69,7 @@ const SignIn = () => {
             token: res.data.jwt,
           })
         );
+
         dispatch(
           updateUser([
             {
@@ -90,6 +91,10 @@ const SignIn = () => {
             {
               fieldName: "role",
               value: res.data.user.user_role,
+            },
+            {
+              fieldName: "acc_status",
+              value: res.data.user.acc_status,
             },
           ])
         );

@@ -2,12 +2,20 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { RootState } from "@/lib/store";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import * as React from "react";
+import { useSelector } from "react-redux";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
+  const userInfo = useSelector((state: RootState) => state.auth.role)
+  const router = useRouter()
+
+  React.useEffect(() => {
+    if (userInfo && userInfo !== 'admin') router.push('/no-permission')
+  }, []);
 
   return (
     <section className="w-full">

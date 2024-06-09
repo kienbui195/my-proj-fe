@@ -17,6 +17,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import apis from "@/lib/apis";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const formSchema = z.object({
   question: z.string().min(10, {
@@ -29,6 +37,19 @@ export interface IDLAnswer {
   content: string;
   desc?: string;
   correct_answer: boolean;
+}
+
+interface ICateSate {
+  id: number;
+  attributes: {
+    title: string;
+    slug: string;
+  };
+}
+
+interface ICate {
+  list: ICateSate[];
+  item?: ICateSate;
 }
 
 const DrivingLesson = () => {
@@ -46,6 +67,13 @@ const DrivingLesson = () => {
       desc: "",
     },
   ]);
+  const [file, setFile] = React.useState<File | string>("");
+  const [categories, setCategories] = React.useState<ICate>({
+    list: [],
+    item: undefined,
+  });
+  const isClient = typeof window === "object";
+  const imageRef = React.useRef<HTMLInputElement>(null);
 
   const handleChangeAnswer = ({
     fieldName,
@@ -64,11 +92,48 @@ const DrivingLesson = () => {
     setAnswers(data);
   };
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {};
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    let imageId = 0;
+
+    if (imageRef.current) {
+      const rawData = imageRef.current.files;
+      
+      if (rawData && rawData.length > 0) {
+        const dataImage = apis.upload(rawData[0])
+        
+      }
+
+    }
+
+    // const dataImage = image && image.length > 0 ? await apis.upload(image[0]) : null;
+
+
+
+    // console.log(dataImage);
+
+    // const questionInfo = apis.post("dl-questions", {
+    //   question: values.question,
+    //   paralyzed_point: values.pp,
+    //   category: categories.item ? { id: categories.item.id } : {},
+    // });
+  };
+
+  React.useEffect(() => {
+    const handleGetCategories = () => {
+      apis
+        .get("dl-ques-categories")
+        .then((res) => {
+          setCategories((prev) => ({ ...prev, list: res.data.data }));
+        })
+        .catch((err) => console.log("get categories", err.message));
+    };
+
+    handleGetCategories();
+  }, []);
 
   return (
     <section>
-      <Tabs className="w-full">
+      <Tabs className="w-full" defaultValue="add-question">
         <TabsList className="">
           <TabsTrigger value="add-question">Add Question</TabsTrigger>
           <TabsTrigger value="statistical">Statistical</TabsTrigger>
@@ -98,6 +163,62 @@ const DrivingLesson = () => {
                   </FormItem>
                 )}
               />
+              <FormField
+                name="question"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Image</FormLabel>
+                    <FormControl>
+                      <Input
+                        ref={imageRef}
+                        type="file"
+                        accept=".jpeg, .png"
+                        placeholder="Accept JPEG, PNG"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="pp"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <div className="flex items-center space-x-2">
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          id={`question`}
+                        />
+                        <Label htmlFor={`question`}>Paralyzed Point</Label>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Select
+                onValueChange={(value) =>
+                  setCategories((prev) => ({
+                    ...prev,
+                    item: categories.list.find((item) => item.id === +value),
+                  }))
+                }
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a category for this question" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.list.map((_cate, idx) => {
+                    return (
+                      <SelectItem key={idx} value={`${_cate.id}`}>
+                        {_cate?.attributes?.title}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
               {answers.map((_i, idx) => {
                 return (
                   <div key={idx}>

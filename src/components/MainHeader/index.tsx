@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Button } from "../ui/button";
 import { IAuthState, clearUser, updateUser } from "@/lib/features/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import apis from "@/lib/apis";
@@ -18,6 +17,7 @@ import {
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Crown, LayoutDashboard, LogOut, Settings, User } from "lucide-react";
+import { Button } from "../ui/button";
 
 const MainHeader = () => {
   const isClient = typeof window === "object";
@@ -65,12 +65,20 @@ const MainHeader = () => {
               fieldName: "role",
               value: res.data.user_role,
             },
+            {
+              fieldName: "acc_status",
+              value: res.data.acc_status,
+            },
           ])
         );
       })
       .catch((err) => {
         if (err.statusCode === 401) {
           localStorage.removeItem("KDEV_USER");
+          toast({
+            description: `Session's Login is expired!`,
+            variant: "destructive",
+          });
           router.refresh();
         }
         toast({
@@ -93,12 +101,20 @@ const MainHeader = () => {
             <div>
               <DropdownMenu>
                 <DropdownMenuTrigger className={`outline-none relative`}>
-                  <Avatar className={`${userInfo.role === 'admin' ? 'border-2 border-yellow-400 rounded-full' : ""}`}>
+                  <Avatar
+                    className={`${
+                      userInfo.role === "admin"
+                        ? "border-2 border-yellow-400 rounded-full"
+                        : ""
+                    }`}
+                  >
                     <AvatarFallback className="font-bold bg-yellow-100">
                       {userInfo.email[0].toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  {userInfo.role === 'admin' && <Crown className="w-4 h-4 absolute -top-1/4 left-1/3 bg-yellow-400"/>}
+                  {userInfo.role === "admin" && (
+                    <Crown className="w-4 h-4 absolute -top-1/4 left-1/3 bg-yellow-400" />
+                  )}
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56">
                   {userInfo.role === "admin" && (

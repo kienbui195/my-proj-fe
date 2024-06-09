@@ -1,4 +1,5 @@
 import axios from "axios";
+import { createQuery } from "../utils";
 
 const apis = {
   login: async ({ email, password }: { email: string; password: string }) => {
@@ -50,6 +51,151 @@ const apis = {
         email,
         user_role: role,
       })
+      .then((res) => res)
+      .catch((err) => err);
+  },
+
+  get: async (url: string, query?: object) => {
+    const isClient = typeof window === "object";
+    const localToken = isClient
+      ? JSON.parse(localStorage.getItem("KDEV_USER") as string)?.token
+      : "";
+
+    return await axios
+      .get(
+        `${process.env.NEXT_PUBLIC_BE}/${url}${
+          query ? `?${createQuery(query)}` : ""
+        }`,
+        {
+          headers:
+            localToken && localToken !== ""
+              ? {
+                  Authorization: `Bearer ${localToken}`,
+                }
+              : {},
+        }
+      )
+      .then((res) => res)
+      .catch((err) => err);
+  },
+
+  post: async (url: string, data: any) => {
+    const isClient = typeof window === "object";
+    const localToken = isClient
+      ? JSON.parse(localStorage.getItem("KDEV_USER") as string)?.token
+      : "";
+
+    return await axios
+      .post(
+        `${process.env.NEXT_PUBLIC_BE}/${url}`,
+        {
+          ...data,
+        },
+        {
+          headers:
+            localToken && localToken !== ""
+              ? {
+                  Authorization: `Bearer ${localToken}`,
+                }
+              : {},
+        }
+      )
+      .then((res) => res)
+      .catch((err) => err);
+  },
+
+  put: async (url: string, id: number, data: any) => {
+    const isClient = typeof window === "object";
+    const localToken = isClient
+      ? JSON.parse(localStorage.getItem("KDEV_USER") as string)?.token
+      : "";
+
+    return await axios
+      .put(
+        `${process.env.NEXT_PUBLIC_BE}/${url}/${id}`,
+        {
+          ...data,
+        },
+        {
+          headers:
+            localToken && localToken !== ""
+              ? {
+                  Authorization: `Bearer ${localToken}`,
+                }
+              : {},
+        }
+      )
+      .then((res) => res)
+      .catch((err) => err);
+  },
+
+  del: async (url: string, id: number) => {
+    const isClient = typeof window === "object";
+    const localToken = isClient
+      ? JSON.parse(localStorage.getItem("KDEV_USER") as string)?.token
+      : "";
+
+    return await axios
+      .delete(`${process.env.NEXT_PUBLIC_BE}/${url}/${id}`, {
+        headers:
+          localToken && localToken !== ""
+            ? {
+                Authorization: `Bearer ${localToken}`,
+              }
+            : {},
+      })
+      .then((res) => res)
+      .catch((err) => err);
+  },
+
+  getOne: async (url: string, id: number, query?: object) => {
+    const isClient = typeof window === "object";
+    const localToken = isClient
+      ? JSON.parse(localStorage.getItem("KDEV_USER") as string)?.token
+      : "";
+
+    return await axios
+      .get(
+        `${process.env.NEXT_PUBLIC_BE}/${url}/${id}${
+          query ? `?${createQuery(query)}` : ""
+        }`,
+        {
+          headers:
+            localToken && localToken !== ""
+              ? {
+                  Authorization: `Bearer ${localToken}`,
+                }
+              : {},
+        }
+      )
+      .then((res) => res)
+      .catch((err) => err);
+  },
+
+  upload: async (image: File) => {
+    const isClient = typeof window === "object";
+    const localToken = isClient
+      ? JSON.parse(localStorage.getItem("KDEV_USER") as string)?.token
+      : "";
+
+    const formData = new FormData();
+    formData.append("files", image);
+
+    return await axios
+      .post(
+        `${process.env.NEXT_PUBLIC_BE}/upload`,
+        {
+          data: formData,
+        },
+        {
+          headers:
+            localToken && localToken !== ""
+              ? {
+                  Authorization: `Bearer ${localToken}`,
+                }
+              : {},
+        }
+      )
       .then((res) => res)
       .catch((err) => err);
   },

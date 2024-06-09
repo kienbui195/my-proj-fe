@@ -18,9 +18,9 @@ jobs:
           script: |
             whoami
             cd ~/KienBQ/my-proj-fe
-            eval `ssh-agent -s`
-            ssh-add /root/.ssh/github_key
-            git pull origin master
+            eval "$(ssh-agent -s)"
+            ssh-add ~/.ssh/github_key
+            git pull
             export NVM_DIR=~/.nvm
             source ~/.nvm/nvm.sh  
             npm install
