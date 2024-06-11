@@ -26,6 +26,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
+import { Trash2 } from "lucide-react";
 
 const formSchema = z.object({
   question: z.string().min(10, {
@@ -61,13 +62,12 @@ const DrivingLesson = () => {
       pp: false,
     },
   });
-  const [answers, setAnswers] = React.useState<IDLAnswer[]>([
-    {
-      content: "",
-      correct_answer: false,
-      desc: "",
-    },
-  ]);
+  const initAnswer: IDLAnswer = {
+    content: "",
+    correct_answer: false,
+    desc: "",
+  };
+  const [answers, setAnswers] = React.useState<IDLAnswer[]>([initAnswer]);
   const [categories, setCategories] = React.useState<ICate>({
     list: [],
     item: undefined,
@@ -120,7 +120,18 @@ const DrivingLesson = () => {
         },
       })
       .then((res) => {
-        console.log(res.data);
+        toast({
+          description: "create question successfully!",
+        });
+        setAnswers([initAnswer]);
+        setCategories((prev) => ({
+          ...prev,
+          item: undefined,
+        }));
+        form.reset({
+          pp: false,
+          question: "",
+        });
       })
       .catch((err) => {
         console.log("create-question", err.message);
@@ -241,31 +252,43 @@ const DrivingLesson = () => {
                           <div className="font-semibold">
                             {idx + 1}. Answer:
                           </div>
-                          <div className="flex items-center space-x-2">
-                            <Switch
-                              checked={_i.correct_answer}
-                              onCheckedChange={(val) => {
-                                let data = [...answers];
-                                data.reduce(
-                                  (acc: IDLAnswer[], item: IDLAnswer) => {
-                                    if (item.correct_answer)
-                                      item.correct_answer = false;
-                                    return acc;
-                                  },
-                                  []
-                                );
-                                setAnswers(data);
-                                handleChangeAnswer({
-                                  fieldName: "correct_answer",
-                                  value: val,
-                                  idx,
-                                });
-                              }}
-                              id={`${idx}_answers`}
-                            />
-                            <Label htmlFor={`${idx}_answers`}>
-                              Correct Answer?
-                            </Label>
+                          <div className="flex flex-row items-center gap-2">
+                            <div className="flex items-center space-x-2">
+                              <Switch
+                                checked={_i.correct_answer}
+                                onCheckedChange={(val) => {
+                                  let data = [...answers];
+                                  data.reduce(
+                                    (acc: IDLAnswer[], item: IDLAnswer) => {
+                                      if (item.correct_answer)
+                                        item.correct_answer = false;
+                                      return acc;
+                                    },
+                                    []
+                                  );
+                                  setAnswers(data);
+                                  handleChangeAnswer({
+                                    fieldName: "correct_answer",
+                                    value: val,
+                                    idx,
+                                  });
+                                }}
+                                id={`${idx}_answers`}
+                              />
+                              <Label htmlFor={`${idx}_answers`}>
+                                Correct Answer?
+                              </Label>
+                            </div>
+                            {idx !== 0 && (
+                              <Trash2
+                                className="w-6 h-6 cursor-pointer"
+                                onClick={() => {
+                                  let updateData = [...answers];
+                                  updateData.splice(idx, 1);
+                                  setAnswers(updateData);
+                                }}
+                              />
+                            )}
                           </div>
                         </div>
                         <Input
@@ -299,16 +322,7 @@ const DrivingLesson = () => {
                 type="button"
                 variant={"outline"}
                 className="w-full mt-2"
-                onClick={() =>
-                  setAnswers((prev) => [
-                    ...prev,
-                    {
-                      content: "",
-                      desc: "",
-                      correct_answer: false,
-                    },
-                  ])
-                }
+                onClick={() => setAnswers((prev) => [...prev, initAnswer])}
               >
                 +
               </Button>
