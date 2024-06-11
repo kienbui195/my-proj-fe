@@ -38,7 +38,7 @@ const formSchema = z.object({
 export interface IDLAnswer {
   content: string;
   desc?: string;
-  correct_answer: boolean;
+  is_correct: boolean;
 }
 
 interface ICateSate {
@@ -64,7 +64,7 @@ const DrivingLesson = () => {
   });
   const initAnswer: IDLAnswer = {
     content: "",
-    correct_answer: false,
+    is_correct: false,
     desc: "",
   };
   const [answers, setAnswers] = React.useState<IDLAnswer[]>([initAnswer]);
@@ -109,13 +109,12 @@ const DrivingLesson = () => {
     }
 
     apis
-      .post(`dl-create-question${imageId > 0 ? `?imageId=${imageId}` : ""}`, {
+      .post(`dl-questions`, {
         data: {
-          question: {
-            question: values.question,
-            pp: values.pp,
-            ...(categories.item ? { categoryId: categories.item.id } : {}),
-          },
+          question: values.question,
+          paralyzed_point: values.pp,
+          ...(categories.item ? { category: categories.item.id } : {}),
+          ...(imageId ? { images: imageId } : {}),
           answers,
         },
       })
@@ -255,20 +254,20 @@ const DrivingLesson = () => {
                           <div className="flex flex-row items-center gap-2">
                             <div className="flex items-center space-x-2">
                               <Switch
-                                checked={_i.correct_answer}
+                                checked={_i.is_correct}
                                 onCheckedChange={(val) => {
                                   let data = [...answers];
                                   data.reduce(
                                     (acc: IDLAnswer[], item: IDLAnswer) => {
-                                      if (item.correct_answer)
-                                        item.correct_answer = false;
+                                      if (item.is_correct)
+                                        item.is_correct = false;
                                       return acc;
                                     },
                                     []
                                   );
                                   setAnswers(data);
                                   handleChangeAnswer({
-                                    fieldName: "correct_answer",
+                                    fieldName: "is_correct",
                                     value: val,
                                     idx,
                                   });

@@ -3,13 +3,14 @@ import { createQuery } from "../utils";
 
 const apis = {
   login: async ({ email, password }: { email: string; password: string }) => {
-    return await axios
-      .post(`${process.env.NEXT_PUBLIC_BE}/auth/local`, {
+    try {
+      return await axios.post(`${process.env.NEXT_PUBLIC_BE}/auth/local`, {
         identifier: email,
         password,
-      })
-      .then((res) => res)
-      .catch((err) => err);
+      });
+    } catch (err) {
+      throw err;
+    }
   },
 
   getUser: async ({ id }: { id: number }) => {
@@ -23,14 +24,15 @@ const apis = {
 
     if (id === 0) return;
 
-    return await axios
-      .get(`${process.env.NEXT_PUBLIC_BE}/users/me`, {
+    try {
+      return await axios.get(`${process.env.NEXT_PUBLIC_BE}/users/me`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      })
-      .then((res) => res)
-      .catch((err) => err);
+      });
+    } catch (err) {
+      throw err;
+    }
   },
 
   register: async ({
@@ -44,15 +46,19 @@ const apis = {
     email: string;
     role: string;
   }) => {
-    return await axios
-      .post(`${process.env.NEXT_PUBLIC_BE}/auth/local/register`, {
-        username,
-        password,
-        email,
-        user_role: role,
-      })
-      .then((res) => res)
-      .catch((err) => err);
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_BE}/auth/local/register`,
+        {
+          username,
+          password,
+          email,
+          user_role: role,
+        }
+      );
+    } catch (err) {
+      throw err;
+    }
   },
 
   get: async (url: string, query?: object) => {
@@ -61,8 +67,8 @@ const apis = {
       ? JSON.parse(localStorage.getItem("KDEV_USER") as string)?.token
       : "";
 
-    return await axios
-      .get(
+    try {
+      return await axios.get(
         `${process.env.NEXT_PUBLIC_BE}/${url}${
           query ? `?${createQuery(query)}` : ""
         }`,
@@ -74,9 +80,10 @@ const apis = {
                 }
               : {},
         }
-      )
-      .then((res) => res)
-      .catch((err) => err);
+      );
+    } catch (err) {
+      throw err;
+    }
   },
 
   post: async (url: string, data: any) => {
@@ -85,8 +92,8 @@ const apis = {
       ? JSON.parse(localStorage.getItem("KDEV_USER") as string)?.token
       : "";
 
-    return await axios
-      .post(
+    try {
+      return await axios.post(
         `${process.env.NEXT_PUBLIC_BE}/${url}`,
         {
           ...data,
@@ -99,9 +106,10 @@ const apis = {
                 }
               : {},
         }
-      )
-      .then((res) => res)
-      .catch((err) => err);
+      );
+    } catch (err) {
+      throw err;
+    }
   },
 
   put: async (url: string, id: number, data: any) => {
@@ -110,8 +118,8 @@ const apis = {
       ? JSON.parse(localStorage.getItem("KDEV_USER") as string)?.token
       : "";
 
-    return await axios
-      .put(
+    try {
+      return await axios.put(
         `${process.env.NEXT_PUBLIC_BE}/${url}/${id}`,
         {
           ...data,
@@ -124,9 +132,10 @@ const apis = {
                 }
               : {},
         }
-      )
-      .then((res) => res)
-      .catch((err) => err);
+      );
+    } catch (err) {
+      throw err;
+    }
   },
 
   del: async (url: string, id: number) => {
@@ -135,17 +144,18 @@ const apis = {
       ? JSON.parse(localStorage.getItem("KDEV_USER") as string)?.token
       : "";
 
-    return await axios
-      .delete(`${process.env.NEXT_PUBLIC_BE}/${url}/${id}`, {
+    try {
+      return await axios.delete(`${process.env.NEXT_PUBLIC_BE}/${url}/${id}`, {
         headers:
           localToken && localToken !== ""
             ? {
                 Authorization: `Bearer ${localToken}`,
               }
             : {},
-      })
-      .then((res) => res)
-      .catch((err) => err);
+      });
+    } catch (err) {
+      throw err;
+    }
   },
 
   getOne: async (url: string, id: number, query?: object) => {
@@ -154,8 +164,8 @@ const apis = {
       ? JSON.parse(localStorage.getItem("KDEV_USER") as string)?.token
       : "";
 
-    return await axios
-      .get(
+    try {
+      return await axios.get(
         `${process.env.NEXT_PUBLIC_BE}/${url}/${id}${
           query ? `?${createQuery(query)}` : ""
         }`,
@@ -167,9 +177,10 @@ const apis = {
                 }
               : {},
         }
-      )
-      .then((res) => res)
-      .catch((err) => err);
+      );
+    } catch (err) {
+      throw err;
+    }
   },
 
   upload: async (image: File, fileName?: string) => {
@@ -181,17 +192,22 @@ const apis = {
     const formData = new FormData();
     formData.append("files", image, fileName ?? image.name);
 
-    return await axios
-      .post(`${process.env.NEXT_PUBLIC_BE}/upload`, formData, {
-        headers:
-          localToken && localToken !== ""
-            ? {
-                Authorization: `Bearer ${localToken}`,
-              }
-            : {},
-      })
-      .then((res) => res)
-      .catch((err) => err);
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_BE}/upload`,
+        formData,
+        {
+          headers:
+            localToken && localToken !== ""
+              ? {
+                  Authorization: `Bearer ${localToken}`,
+                }
+              : {},
+        }
+      );
+    } catch (err) {
+      throw err;
+    }
   },
 };
 
