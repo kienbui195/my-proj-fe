@@ -25,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useToast } from "@/components/ui/use-toast";
 
 const formSchema = z.object({
   question: z.string().min(10, {
@@ -67,13 +68,12 @@ const DrivingLesson = () => {
       desc: "",
     },
   ]);
-  const [file, setFile] = React.useState<File | string>("");
   const [categories, setCategories] = React.useState<ICate>({
     list: [],
     item: undefined,
   });
-  const isClient = typeof window === "object";
   const imageRef = React.useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
   const handleChangeAnswer = ({
     fieldName,
@@ -97,25 +97,38 @@ const DrivingLesson = () => {
 
     if (imageRef.current) {
       const rawData = imageRef.current.files;
-      
-      if (rawData && rawData.length > 0) {
-        const dataImage = apis.upload(rawData[0])
-        
-      }
 
+      if (rawData && rawData.length > 0) {
+        const dataImage = await apis.upload(
+          rawData[0],
+          values.question.trim().slice(0, 100)
+        );
+
+        imageId = dataImage.data[0].id;
+      }
     }
 
-    // const dataImage = image && image.length > 0 ? await apis.upload(image[0]) : null;
-
-
-
-    // console.log(dataImage);
-
-    // const questionInfo = apis.post("dl-questions", {
-    //   question: values.question,
-    //   paralyzed_point: values.pp,
-    //   category: categories.item ? { id: categories.item.id } : {},
-    // });
+    apis
+      .post(`dl-create-question${imageId > 0 ? `?imageId=${imageId}` : ""}`, {
+        data: {
+          question: {
+            question: values.question,
+            pp: values.pp,
+            ...(categories.item ? { categoryId: categories.item.id } : {}),
+          },
+          answers,
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log("create-question", err.message);
+        toast({
+          description: "Oops, something went wrong!",
+          variant: "destructive",
+        });
+      });
   };
 
   React.useEffect(() => {

@@ -172,30 +172,24 @@ const apis = {
       .catch((err) => err);
   },
 
-  upload: async (image: File) => {
+  upload: async (image: File, fileName?: string) => {
     const isClient = typeof window === "object";
     const localToken = isClient
       ? JSON.parse(localStorage.getItem("KDEV_USER") as string)?.token
       : "";
 
     const formData = new FormData();
-    formData.append("files", image);
+    formData.append("files", image, fileName ?? image.name);
 
     return await axios
-      .post(
-        `${process.env.NEXT_PUBLIC_BE}/upload`,
-        {
-          data: formData,
-        },
-        {
-          headers:
-            localToken && localToken !== ""
-              ? {
-                  Authorization: `Bearer ${localToken}`,
-                }
-              : {},
-        }
-      )
+      .post(`${process.env.NEXT_PUBLIC_BE}/upload`, formData, {
+        headers:
+          localToken && localToken !== ""
+            ? {
+                Authorization: `Bearer ${localToken}`,
+              }
+            : {},
+      })
       .then((res) => res)
       .catch((err) => err);
   },
