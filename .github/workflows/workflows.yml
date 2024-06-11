@@ -20,6 +20,7 @@ jobs:
             cd ~/KienBQ/my-proj-fe
             eval "$(ssh-agent -s)"
             ssh-add ~/.ssh/github_key
+            git checkout .
             git pull
             export NVM_DIR=~/.nvm
             source ~/.nvm/nvm.sh  

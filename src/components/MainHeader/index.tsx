@@ -79,8 +79,9 @@ const MainHeader = () => {
             description: `Session's Login is expired!`,
             variant: "destructive",
           });
-          router.refresh();
+          router.push("/");
         }
+        router.push("/");
         toast({
           description: `Session's Login is expired!`,
           variant: "destructive",
