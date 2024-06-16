@@ -40,9 +40,12 @@ const MainHeader = () => {
   };
 
   React.useEffect(() => {
+    if (!userLocal.id || userLocal.id === 0) return;
     apis
-      .getUser({ id: userLocal?.id ?? 0 })
+      .getUser({ id: userLocal.id })
       .then((res) => {
+        if (!res) return console.log("get user");
+
         dispatch(
           updateUser([
             {
