@@ -1,16 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['127.0.0.1', 'admin.kiendev.click'],
+    domains: ["127.0.0.1", "admin.kiendev.click"],
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'admin.kiendev.click'
-      }
+        protocol: "https",
+        hostname: "admin.kiendev.click",
+      },
     ],
-    loader: "default"
+    loader: "default",
   },
-  reactStrictMode: false
+  reactStrictMode: false,
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
+  },
 };
 
 export default nextConfig;
